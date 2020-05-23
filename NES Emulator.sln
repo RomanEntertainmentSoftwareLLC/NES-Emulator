@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NES Emulator", "NES Emulator\NES Emulator.vcxproj", "{999A2336-61B0-426D-AA31-0B2D2E6D06EF}"
+EndProject
+Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{999A2336-61B0-426D-AA31-0B2D2E6D06EF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{999A2336-61B0-426D-AA31-0B2D2E6D06EF}.Debug|Win32.Build.0 = Debug|Win32
+		{999A2336-61B0-426D-AA31-0B2D2E6D06EF}.Release|Win32.ActiveCfg = Release|Win32
+		{999A2336-61B0-426D-AA31-0B2D2E6D06EF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

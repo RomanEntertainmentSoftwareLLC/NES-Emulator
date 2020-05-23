@@ -1,0 +1,270 @@
+VB6 operations at 10,000,000 clock cycles executed
+
+& = Long Integer
+! = Single
+# = Double
+@ = Currency
+$ = String. 
+
+Done 10 times and divided by 10 to receive these averages:
+(Note: The number doesn't matter if its 1 or some other number. The average stays the same. Also note the smaller average means its faster
+than the larger averages because its the time it takes to execute 10,000,000 times in miliseconds)
+
+Source Code to test routines:
+[code]
+Option Explicit
+
+Private Declare Function GetTickCount Lib "kernel32" () As Long
+
+Dim Start As Long
+Dim Finish As Long
+Dim I As Long
+
+Dim A As Long
+Dim B As Long
+Dim C As Long
+
+Private Sub Command1_Click()
+    
+    Start = GetTickCount
+    For I = 1 To 10000000
+    	'Your test here
+    Next I
+    Finish = GetTickCount
+    
+    Debug.Print (Finish - Start)
+End Sub
+[/code]
+
+
+Miscellaneous
+----------------------------
+Nothing. The check is totally empty: 128
+----------------------------
+
+
+
+Variable Declaration
+----------------------------
+Declaring a Long variable: 129.4
+Dim A As Long
+
+Declaring a variant variable with no declaration: 128.1
+Dim A  
+----------------------------
+
+
+
+Equal (=)
+----------------------------
+Long variable equals a whole number: 216.8
+A = 1
+
+
+Long variable equals itself: 265.4
+A = A
+----------------------------
+
+
+
+Addition (+):
+----------------------------
+Adding whole number and whole number storing in a Long variable = 221.7
+A = 1 + 1
+
+Adding whole number and decimal number storing in a Long variable = 285.5
+A = 1 + 0.5
+
+Adding decimal number and whole number storing in a Long variable = 291.9
+A = 0.5 + 1` 
+
+Adding decimal number and decimal number storing in a Long variable = 259
+A = 0.5 + 0.5
+
+Adding Long variable and whole number storing in a Long variable = 288.7
+A = B + 1
+
+Adding Long variable and Long variable storing in a Long variable = 324.6
+A = B + C
+
+Adding CLng(whole number) and CLng(whole number) storing in a Long variable: 216.7
+A = CLng(1) + CLng(1)
+
+Adding whole number with & and whole number with & storing in a Long variable: 213.7
+A = 1& + 1&
+----------------------------
+
+
+
+Subtraction (-):
+----------------------------
+Subtracting whole number and whole number storing in Long variable = 218.6
+A = 1 - 1
+----------------------------
+
+
+
+Multiplecation (*):
+----------------------------
+Multiplying whole number and whole number, storing in a Long variable = 220.1
+A = 1 * 1
+
+Multiplying whole number and decimal number, storing in a Long variable = 272.9
+A = 1 * 0.5
+----------------------------
+
+
+
+Division (/)
+----------------------------
+Dividing whole number and whole number, storing in a Long variable = 305.8
+A = 1 / 1
+
+Dividing whole number and decimal number, storing in a Long variable = 277.7
+A = 1 / 0.5
+
+Dividing decimal number and decimal number, storing in a Long variable = 276.1
+A = 0.5 / 0.5
+----------------------------
+
+
+
+
+Division2 (\)
+----------------------------
+Dividing whole number and whole number, storing in Long variable: 221.5
+A = 1 \ 1
+
+Dividing whole number and decimal number, storing in Long variable: 307.5
+(Note: any decimal before 1 results in division by zero error!)
+A = 1 \ 1.5
+
+
+Dividing decimal number and whole number, storing in Long variable: 287.1
+A = 0.5 \ 1
+
+Dividing Long variable and whole number, storing in Long variable: 287.2
+A = B \ 1
+
+Dividing whole number and Long variable, storing in Long variable: 301.2
+(Note: This assumes the variable B is NOT zero)
+A = 1 \ B
+
+Dividing Long variable and Long variable, storing in Long variable: 332.4
+(Note: This assumes the variable C is NOT zero)
+A = B \ C
+
+
+
+Subroutines
+----------------------------
+Empty Subroutine with no Private/Public, no Call statement and no arguements called in same Form: 897
+[code]
+Sub Test()
+
+End Sub
+
+...
+Test
+[/code]
+
+Empty Subroutine with no Private/Public, with Call statement and no arguements: 889.5
+[code]
+Sub Test()
+
+End Sub
+
+...
+Call Test
+[/code]
+
+Empty Subroutine with Public, no Call statement and no arguements called in same Form: 887.5
+[code]
+Public Sub Test()
+
+End Sub
+
+...
+Test
+[/code]
+
+Empty Subroutine with Public, no Call statement, and no arguements in a Module called in a Form: 755
+[code]
+Public Sub Test()
+
+End Sub
+
+...
+Test
+[/code]
+
+Empty Subroutine with Public, with Call statement, and no arguements in a Module called in a Form: 744.4
+[code]
+Public Sub Test()
+
+End Sub
+
+...
+Call Test
+[/code]
+
+Empty Subroutine with Public, no Call statement, and no arguements in a Class Module called in a Form: 1246.7
+Public Sub Test()
+
+End Sub
+
+...
+Class.Test
+----------------------------
+
+
+
+If Statements
+----------------------------
+False If Statement Block checking if Long variable has value: 246.6
+If A Then
+End If
+
+True If Statement Block checking if Long variable has value: 230.8
+If A Then
+End If
+
+False If Statement Block checking if Long variable > 0: 290
+If A > 0 Then
+End If
+
+True If Statement Block checking if Long variable > 0: 245.2
+If A > 0 Then
+End If
+ 
+
+False If Statement Block checking if Long variable > Long variable: 290.1
+If A > B Then
+End If
+
+False If Statement in no block checking if Long variable has value then A = B: 243.6
+If A Then A = B
+----------------------------
+
+
+
+Select Case Statements
+----------------------------
+False Select Case Long variable with one arguement checking if 0: 324.5
+Select Case A
+Case 1
+End Select
+
+True Select Case Long variable with one arguement checking if 0: 312.1
+Select Case A
+Case 0
+End Select
+
+
+
+	
+ 
+
+
+
+ 

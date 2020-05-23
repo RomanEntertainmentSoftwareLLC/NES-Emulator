@@ -1,0 +1,111 @@
+Prefix Software Team Info
+
+Name: M6502
+Version: V.15f
+Author: Donald Jarrett
+Info: Ported from a C source Neil Bradley gave to the 
+Emulation Repository. This version has many bugs which
+will be fixed by the next version. Give credit to me
+and Neil Bradley and send email to me before using this.
+
+ToDo: Correctly emulate brk6502(). Speed up. 
+
+A note to whoever else ports the C code: You cannot do
+certain things in VB5. You cannot encounter a bad opcode
+in this 6502 emulator. Reasons: All invalid opcodes are
+set to NOP. I have had 260 downloads in the last two weeks,
+which means this is midly popular. This one has been worked on frantically and has been improved
+a lot since release .1. There's not much point to a new
+6502 emulator in VB5 since there are already 2 of them
+and the other one also works pretty good. mNES *HAS* been cancelled, and
+basicNES(a long lost NES emulator from *1996*) has been restarted. Any
+help decoding NES chars would be great.
+ 
+V.16(2/ /98):
+- Yaya... brk6502 finally working.
+- irq6502 also fixed...
+- A few speed ups, nothing noticeable.
+
+V.15e(2/2/98):
+- Fixed a bug in the sed6502 instruction(I think!)
+where instead of P = P or &H1, it said P=P or &O1.
+- Fixed instructions like this:
+       value=gameimage(pc+1)
+I now have:
+       value=gameimage(pc)
+       pc=pc+1
+Most of the instructions like this are fixed.
+- Watch for mNES V.10 soon!
+
+V.15d(2/1/98):
+- Some addressing modes were not working right. This is
+fixed in this version. 
+- What do you think of these updates? Good, bad, or 
+ugly? Send your comments to r.jarrett@worldnet.att.net.
+
+V.15c(1/31/98):
+- Some OpCodes did not have the addressing mode stuff. This
+is now fixed.
+- Help me with brk6502!!!!!!!
+
+V.15b(1/31/98):
+- Rewrote the Select Case statement in exec6502 like this:
+Select case instruction(opcode)
+case "lda6502": lda6502
+end select
+kinda like that. Makes it work better I think. 
+- Tested Super Mario Bros. on it: It looped because it's
+waiting for input from the user. 
+- mNES now has a simple tile viewer.
+
+V.15(11/16/97):
+Apparently, V.14b and down weren't doing addressing modes
+right. Me and Akilla^ have fixed it in this version. This
+is a latest update. I'm going to try to re-write the code
+for a total speed increase. This one is not based on anything,
+just me writing. =). However, I will still continue to
+update this older M6502.
+
+V.14b(11/7/97):
+Wow, up to 700 downloads, or maybe 800 now. Thanks to 
+everyone who has downloaded it. This is a minor update.
+Source:
+- Keep trying to get brk6502() working but it just won't.
+Someone email me if they can get it working...
+- Added OpCode &H80 to &H8F because they were missing.
+- Added more to CPU1 Type. I deleted this section of the
+source because it's not working yet.
+- Debugging Version. Set TrapBadOps to 1 so the emulation
+will quit when a bad opcode(case else in exec6502) is
+encountered.
+
+V.14a(11/6/97):
+Wow, 300 downloads in the last two days. Thanx to everyone
+who has supported it. As you can see, I skipped V.13 because
+I don't like that number. Source Updates:
+- Added CPU(0 to 4) for multiple CPUs(You arcade emu authors).
+It's commented out in this version, very preliminary.
+- Jurassic Park for NES runs for 8000 instructions!!!
+This is the first game i've gotten to run it.
+
+V.12(11/4/97):
+Added some new stuff and Addressing Modes for every instruction.
+Made it more like the C code. 
+Added homepage(unimportant)!
+http://home.att.net/~r.jarrett/prod.html
+
+V.11(11/3/97): 
+Sui` finished the Select Case statements for me...
+
+V.1(11/2/97):
+Initial Release
+
+This emulator can be used in Atari 800 stuff, Atari 2600, NES, 
+Atari Arcades(Vector games =)) emulators and others.
+
+Donald Jarrett/FrodoDead
+http://home.att.net/~r.jarrett/prod.html
+r.jarrett@worldnet.att.net
+Please do not ask me about MC68000...
+Do not ask me for ROMs!
+Do not ask me about mNES...

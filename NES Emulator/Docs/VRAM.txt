@@ -1,0 +1,68 @@
+Scrolling
+-----------------------
+VRAM Address Register is 16 bit.
+
+0  = 1     = $1
+1  = 2     = $2
+2  = 4     = $4
+3  = 8     = $8
+4  = 16    = $10
+5  = 32    = $20
+6  = 64    = $40
+7  = 128   = $80
+8  = 256   = $100
+9  = 512   = $200
+10 = 1024  = $400
+11 = 2048  = $800
+12 = 4096  = $1000
+13 = 8192  = $2000
+14 = 16384 = $4000
+15 = 32768 = $8000
+ 
+• Bits 0-11 - Stores the address in the name table as an offset from $2000. 
+     vvvv vvvv vvvv
+0000 0000 0000 0000
+
+• Bits 0-4 are the x-scroll and is incremented as the line is drawn. 
+	     v vvvv	
+0000 0000 0000 0000
+
+As this is incremented from 31, it wraps to 0 and bit 10 is switched. 
+      v
+0000 0000 0000 0000
+
+
+• Bits 5-9 are the y-scroll and are incremented at the end of a line. 
+       vv vvv
+0000 0000 0000 0000
+
+When incremented from 29, it wraps to 0 and bit 11 is switched. If the
+value is set above 29 by a write to $2007, then it will wrap to 0 when it reaches 31,
+but bit 11 is not affected.
+     v
+0000 0000 0000 0000
+
+• Bits 12-14 are the tile y-offset.
+vvvv
+0000 0000 0000 0000
+
+Since the x-scroll and the y-scroll indicate tile numbers, this allows 32 tiles across the screen
+(256 pixels) and 30 tiles down the screen (240 pixels), for a total of 960 tiles.
+
+There is a second, temporary VRAM address register which is also 16-bits long. 
+
+Finally there is a 3-bit tile x-offset. These are updated by writes to registers and as the frame is drawn.
+Tile x-offset goes from 0 to 7:
+
+0: 000
+1: 001
+2: 010
+3: 011
+4: 100
+5: 101
+6: 110
+7: 111
+
+
+
+

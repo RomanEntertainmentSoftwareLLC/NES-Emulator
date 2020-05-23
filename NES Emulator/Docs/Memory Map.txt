@@ -1,0 +1,66 @@
+http://thetechnickel.com/projects/nes-development-intro
+
+CPU Memory Map:
+
+    $0000 - $0800 - RAM
+        $0000 - $00FF
+        	Zero Page - this area of RAM is used for quick storage and has special instructions to access this range in a faster manor than 		the rest of the memory map.
+        $0100 - $01FF
+        	Processor Stack - Each time a sub-routine is called, the processor writes the return address to the stack so that it can return 		to where it branched from once the sub-routine has completed. The stack can also be used for various trucks to use one routine 		with multiple sets of data.
+
+    $2000 - $2007 - PPU Registers
+        $2000
+        	PPUCTRL - Controls NMI enable, sprite sizes, NAM/sprite tile addresses, and NAM table address
+        $2001
+        	PPUMASK - Controls color intensity, NAM/sprite enable, NAM/sprite clipping on left side of screen, and Gray-scale/color enable.
+        $2002
+        	PPUSTATUS - Returns various information about the PPU such as Vblank status, sprite overflow, and sprite 0 hit.
+        $2003
+        	OAMADDR - This register chooses the OAM (sprite) address to read or write using OAMDATA ($2004), this value ranges from $00 - $FF
+        $2004
+        	OAMDATA - This register will write to or read from the address choosen via OAMADDR ($2003). Reads/Writes to this register will 			  increment OAMADDR under most conditions.
+        $2005
+        	PPUSCROLL - This register controls the NAM scroll offset, the first write controls the horizontal offset, the second write 			    controls the vertical offset.
+        $2006
+        	PPUADDR - This register chooses the VRAM address to read/write to and consists of two writes. The first write is the high byte of 			  the VRAM address, while the second is the LOW byte.
+        $2007
+        	PPUDATA - This register reads from or writes to the address choosen via PPUADDR ($2006). Reads/Writes to this register will 			  increment the PPUADDR by either 1 or 32, depending on how PPUCTRL ($2000) is set.
+
+    $4000 - $4017 - CPU Registers (Sound / Controller)
+        $4000 - $4013
+        	Sound related registers, I am going to skip these for now and come back to them later
+        $4014
+        	OAMDMA - Writing to this register will copy 256 bytes from $XX00 to the start address choosen via OAMADDR($2003). (where XX is 					 the value written to $4014). This register is typically used during Vblank for major Sprite (OAM) updates.
+        $4015
+        	SNDCHN - Sound status/selection
+        $4016
+        	JOY1 - Reads from joypad 1 one button at a time or reset joypad latch when written to (strobbed). Strobbing this line will reset 			       both joypad latches.
+        $4017
+        	JOY2 - Reads from joypad 2 one button at a time.
+
+PPU Memory Map:
+
+    $0000 - $0FFF
+    	Pattern Table 0, on cartridge. Can be RAM or ROM. Contains 256 8x8 pixel tiles (16 cols x 16 rows)
+    $1000 - $1FFF
+    	Pattern Table 1, on cartridge. Can be RAM or ROM. Contains 256 8x8 pixel tiles (16 cols x 16 rows)
+    $2000 - $23BF
+    	NAM Table 0, 32 x 30 tile grid (256x240 pixel picture). References Pattern Table tiles.
+    $23C0 - $23FF
+    	NAM Table 0 Attributes. Each byte references a palette entry for 4 blocks of 4 tiles each (4 tiles wide, 4 tiles tall).
+    $2400 - $27BF
+    	NAM Table 1, 32 x 30 tile grid (256x240 pixel picture). References Pattern Table tiles.
+    $27C0 - $27FF
+    	NAM Table 1 Attributes. Each byte references a palette entry for 4 blocks of 4 tiles each (4 tiles wide, 4 tiles tall).
+    $2800 - $2BBF
+    	NAM Table 2, 32 x 30 tile grid (256x240 pixel picture). References Pattern Table tiles.
+    $2BC0 - $2BFF
+    	NAM Table 2 Attributes. Each byte references a palette entry for 4 blocks of 4 tiles each (4 tiles wide, 4 tiles tall).
+    $2C00 - $2FBF
+    	NAM Table 3, 32 x 30 tile grid (256x240 pixel picture). References Pattern Table tiles.
+    $2FC0 - $2FFF
+    	NAM Table 3 Attributes. Each byte references a palette entry for 4 blocks of 4 tiles each (4 tiles wide, 4 tiles tall).
+    $3F00 - $3F0F
+    	NAM Palette, organized as 4 sets of 4 bytes. $3F00, $3F04, $3F08, and $3F0C of the NAM palette and $3F10, $3F14, $3F18, and $3F1C of the 	Sprite palette are mirrored as the background color. The three remaining bytes of each set can be any combination.
+    $3F10 - $3F1F
+    	Sprite Palette, organized as 4 sets of 4 bytes. $3F00, $3F04, $3F08, and $3F0C of the NAM palette and $3F10, $3F14, $3F18, and $3F1C of 	the Sprite palette are mirrored as the background color. The three remaining bytes of each set can be any combination.

@@ -1,0 +1,285 @@
+* Mapper 90 information
+-----------------------
+
+Written by Fx3, most of information provided by
+Nori ("Famtasia Author" <fammaster@mail.goo.ne.jp>), a Famicom emulator.
+
+----------------------------------------------------------------------------
+
+This mapper is quite complex, and very similar with MMC5. It's used by some
+pirate titles (Taiwan) such as Super Mario World, Tekken2 and Mortal Kombat.
+Thanks to Nori for most of these informations.
+
+WHAT'S NEW:
+
+Version 2.0  [07-17-2000 (MON) - number 002]
+- Many things were fixed, added source code and lots of comments.
+
+----------------------------------------------------------------------------
+
+* This mapper does not have RAM at $6000-$7FFF space.
+
+----------------------------------------------------------------------------
+
+ address      desc              notes
+ =======      ====              =====
+                           
+  $5000       value1            Reading $5000: (value1*value2) & $ff
+  $5001       value2
+
+  $8000       PRG reg1          8k PRG bank at $8000
+  $8001       PRG reg2          8 or 16k PRG bank at $A000 
+  $8002       PRG reg3          8k PRG bank at $C000
+  $8003       PRG reg4          8k PRG bank at $E000
+
+  $9000-$9007 CHR low regs      Low byte of CHR banks
+  $A000-$A007 CHR high regs     High byte of CHR banks
+
+  $B000-$B003 nametable regs    Low byte of CHR bank number
+  $B004-$B007 nametable regs    High byte of CHR bank number
+
+  $C000       irq registers     Unknown
+  $C001       irq registers     Unknown
+  $C006       irq registers     Unknown
+  $C007       irq registers     Unknown
+
+  $C002       irq clear         irq_flag=0 and INT signal is clear
+
+  $C003       irq reset         if $C005=0, irq_flag=0
+                                else, irq_flag=1 and irq_counter=irq_latch
+
+  $C004       irq reset         It seems same of $C003
+
+  $C005       irq counter       irq_flag=1, irq_latch = irq_counter = value
+
+  $D000       bank mode         S-NccPpp   ('-' (0x40) = unused bit)
+
+                   S: PRG bank at $6000 (1=enabled)
+                 
+                   P: PRG bank at $E000 (1=enabled)
+
+                  pp: PRG bank size
+
+                      00 - nothing?
+                      01 - 16k banks
+                      10 - 8k banks
+                      11 - 8k in reverse mode?
+
+                      NOTE- If PRG bank size=2 (10 - 8k banks):
+                              * if P=1, page at $6000 does not change;
+                                swap 8k PRG bank at $E000.
+
+                              * else (P=0), page at $E000 points to last
+                                8k of PRG (originally set). If S=1, swap
+                                8k of PRG at $6000.
+
+                  cc: CHR bank size select
+                      00 - 8k banks
+                      01 - 4k banks
+                      10 - 2k banks
+                      11 - 1k banks
+
+                   N: Mirroring
+                      0: Normal mirroring (use the $D001 setting)
+                      1: Use CHR banks, instead of VRAM $2000-$2FFF
+
+  $D001       mirroring          ------MM
+                                       00: Vertical mirroring
+                                       01: Horizontal mirroring
+                                       10,
+                                       11: All pages mirror from PPU $2000
+
+  $D002       unknown            Unused?
+  $D003       bank page          Only used by larger carts
+-----------------------------------------------------------------------------
+
+General notes:
+
+1) CHR regs:
+
+- The value has 16 bits. However, MASK the final value correctly.
+- Use this table to help the CHR bankswitching.
+
+
+CHR bank size: bits 4&3 of $D000.
+
+      =REG=  =PPU area=
+      -----------------
+size :          1k             2k             4k             8k
+      $9000  $0000-$03ff or $0000-$07ff or $0000-$0fff or $0000-$1fff
+      $9001  $0400-$07ff
+      $9002  $0800-$0bff or $0800-$0fff
+      $9003  $0c00-$0fff
+      $9004  $1000-$13ff or $1000-$17ff or $1000-$1fff
+      $9005  $1400-$17ff
+      $9006  $1800-$1bff or $1800-$1fff
+      $9007  $1c00-$1fff
+
+Notice that only writes to $9000/$A000 can swap a 8k bank.
+Notice that only writes to $9000/$A000(L), $9004/$A004(H) can swap a 4k bank.
+Notice that only writes to:
+    $9000/$A000
+    $9002/$A002
+    $9004/$A004
+    $9006/$A006 can swap a 2k bank;
+
+And... any register can swap 1k bank :-)
+
+Usually, you cache all writes to these registers:
+
+   ===================================
+     case 0x9000:
+     case 0x9001:
+     (...)
+     case 0x9007:
+       chr_low_byte[addr&7] = data
+       sync_chr_banks()
+
+     case 0xA000:
+     case 0xA001:
+     (...)
+     case 0xA007:
+       chr_high_byte[addr&7] = data
+       sync_chr_banks()
+   ===================================
+
+- Bits 4 & 3 of $D000 control the CHR bank size.
+- Sync CHR banks on $D000 writes too.
+
+
+2) PRG regs:
+
+- On system reset, the LAST 32k of PRG appears at $8000.
+- They work like the CHR bankswitching: you cache all the writes:
+
+   ===================================
+     case 0x8000: 
+     case 0x8001:
+     case 0x8002: 
+     case 0x8003:
+       prg_banks[addr&3] = data
+       sync_prg_banks() 
+   ===================================
+
+- Sync PRG banks on $D000 writes too.
+- Bits 1 & 0 of $D000 control the PRG bank size.
+
+*NOTES:
+
+- When PRG bank size is $0, Nori restores the RESET setting (last 32k of PRG
+to $8000).
+- When PRG bank size is $1 (16k), Nori keeps the last 16k of PRG at $C000.
+- When PRG bank size is $2 (8k) and P=0 (bit 2 of $D000), Nori keeps the last
+8k of PRG at $E000.
+
+* In short words, he always restores the initial PRG state when that area
+is unused.
+
+
+3) Mirroring:
+
+- It's not clear (I'm having problems with MK3).
+- I'll clarify how the mirroring works:
+
+   1) On $D001 writes, cache the value written. If bit 5 of $D000 (N) is
+clear, so mirroring works normally (Horizontal, Vertical or $2000 settings).
+
+   2) You usually cache writes to $B00x regs:
+
+   ===================================
+     case 0xb000:
+     case 0xb001:
+     case 0xb002:
+     case 0xb003:
+       nam_low_byte[addr&3] = data
+       sync_mirrors() 
+
+     case 0xB004:
+     case 0xB005:
+     case 0xB006:
+     case 0xB007:
+       nam_high_byte[addr&3] = data
+       sync_mirrors() 
+   ===================================
+
+   3) Writes to $D000 sync_mirrors() too. The sync_mirrors() looks like:
+
+void sync_mirrors()
+{
+   u8 i;
+
+   /* bankmode = last value written to $D000 */
+   if(bankmode & 0x20)
+   {
+
+      /*
+        You map CHR data in the nametable area using the $B00x values.
+        But, if (high byte, low byte) != (0,0) or (0,1) or (0,2) or (0,3),
+        so N is cleared, and mirroring does not change.
+
+        If you ignore it, a lot of crappy gfx might be displayed.
+      */
+
+      for(i=0;i<4;i++) {
+          if(!nam_high_byte[i] && (nam_low_byte[i] == i)) {
+             bankmode &= 0xdf; //clear the N bit
+             return;
+          }
+      }
+
+/*
+
+NOTE:
+
+#define NAM_CHR(v) \
+ (((nam_high_byte[v]<<8) | nam_low_byte[v]) << 10)
+
+size=1k ($400)
+
+*/
+
+      PPU_NameTables[0] = &VROM[NAM_CHR(0)];
+      PPU_NameTables[1] = &VROM[NAM_CHR(1)];
+      PPU_NameTables[2] = &VROM[NAM_CHR(2)];
+      PPU_NameTables[3] = &VROM[NAM_CHR(3)];
+
+   } else {
+
+      /* Use the normal mirroring
+         (map90_mirror = last value written to $D001)
+       */
+
+      switch(map90_mirror & 3)
+      {
+         case 0: set_vertical_mirroring(); break;
+         case 1: set_horizontal_mirroring(); break;
+         default: set_page(0x2000);
+      }
+   }
+}
+
+
+4) Mapper reset:
+
+- The LAST 32k appears at $8000.
+- The 1st 8k of CHR appears at PPU $0000.
+
+
+5) IRQs:
+
+- Not clear, but it works like MMC3 does.
+
+* IRQ counter is decremented at every scanline, always while not blanking
+(scanline < 240), and background or sprites are enabled. When it reaches
+zero (or a negative value), IRQ is triggered _IF_ the irq_flag is set,
+clearing the irq_flag and irq_latch.
+=============================================================================
+
+I have no clue how accurate this stuff might be.
+Please, tell me if you did any changes to this file.
+
+-= Fx3 =-
+July, 17th 2000
+(fx3rnes@hotmail.com) 
+=============================================================================
+eof
